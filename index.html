@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Xpense — Budget Tracker</title>
 
-  <!-- PWA Meta -->
   <meta name="theme-color" content="#0d0d14" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -13,12 +12,9 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="description" content="Track daily and monthly expenses with budget limits" />
 
-  <!-- Inline Manifest via JS (no separate file needed) -->
   <link rel="manifest" href="#" id="manifest-placeholder" />
 
-  <!-- App Icon (SVG inline as data URI) -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%230d0d14'/%3E%3Ctext x='256' y='320' text-anchor='middle' font-size='260' font-family='monospace'%3E₹%3C/text%3E%3C/svg%3E" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
 
@@ -33,207 +29,62 @@
       overscroll-behavior: none;
     }
     input, select, button { font-family: inherit; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #1a1a2e; }
-    ::-webkit-scrollbar-thumb { background: #3a3a5c; border-radius: 2px; }
-
-    #app {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 16px);
-    }
-
+    #app { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 16px); }
     .container { width: 100%; max-width: 480px; padding: 28px 20px 0; }
-
-    /* Header */
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
     .logo { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -1px; color: #fff; }
     .logo-sub { font-size: 11px; color: #5a5a8a; letter-spacing: 2px; margin-top: 2px; }
-    .settings-btn {
-      background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px;
-      padding: 8px 14px; color: #8888aa; cursor: pointer; font-size: 13px;
-      transition: border-color 0.2s;
-    }
-    .settings-btn:hover { border-color: #4a4a6a; }
-
-    /* Budget Cards */
+    .settings-btn { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 14px; color: #8888aa; cursor: pointer; font-size: 13px; }
     .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-    .budget-card {
-      background: #13131f; border: 1px solid #2a2a4a;
-      border-radius: 14px; padding: 16px; transition: border-color 0.3s;
-    }
+    .budget-card { background: #13131f; border: 1px solid #2a2a4a; border-radius: 14px; padding: 16px; }
     .budget-card.over { border-color: rgba(255,77,77,0.2); }
     .card-label { font-size: 9px; letter-spacing: 3px; color: #5a5a8a; margin-bottom: 8px; }
     .card-spent { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 2px; }
     .card-spent.over { color: #ff4d4d; }
     .card-limit { font-size: 10px; color: #5a5a8a; margin-bottom: 10px; }
     .progress-track { background: #1e1e30; border-radius: 4px; height: 4px; overflow: hidden; margin-bottom: 8px; }
-    .progress-bar { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1), background 0.3s; }
+    .progress-bar { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
     .card-remaining { font-size: 11px; color: #00d68f; }
     .card-remaining.over { color: #ff4d4d; }
-
-    /* Flash */
-    .flash {
-      border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
-      font-size: 12px; animation: slideIn 0.3s ease;
-    }
+    .flash { border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: 12px; }
     .flash.ok { background: #0f2a1f; border: 1px solid rgba(0,214,143,0.27); }
     .flash.warn { background: #2a1515; border: 1px solid rgba(255,77,77,0.27); }
     .flash-title { font-weight: 500; margin-bottom: 6px; }
     .flash-title.ok { color: #00d68f; }
     .flash-title.warn { color: #ff7070; }
-    .flash-meta { color: #8888aa; display: flex; gap: 16px; flex-wrap: wrap; }
-    .flash-meta .ok { color: #00d68f; }
-    .flash-meta .warn { color: #ff4d4d; }
-
-    /* Tabs */
+    .flash-meta { color: #8888aa; display: flex; gap: 16px; }
     .tabs { display: flex; gap: 4px; background: #13131f; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
-    .tab-btn {
-      flex: 1; padding: 9px; border-radius: 9px; border: none; cursor: pointer;
-      background: transparent; color: #5a5a8a; font-size: 12px;
-      letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s;
-    }
+    .tab-btn { flex: 1; padding: 9px; border-radius: 9px; border: none; cursor: pointer; background: transparent; color: #5a5a8a; font-size: 12px; }
     .tab-btn.active { background: #00d68f; color: #000; font-weight: 500; }
-
-    /* Add Form */
     .form-card { background: #13131f; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
     .field-label { font-size: 10px; color: #5a5a8a; letter-spacing: 2px; margin-bottom: 6px; }
     .field-mb { margin-bottom: 14px; }
     .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .input-field {
-      width: 100%; background: #0d0d14; border: 1px solid #2a2a4a;
-      border-radius: 10px; color: #fff; transition: border-color 0.2s;
-      -webkit-appearance: none; appearance: none;
-    }
-    .input-field:focus { outline: none; border-color: #00d68f; }
+    .input-field { width: 100%; background: #0d0d14; border: 1px solid #2a2a4a; border-radius: 10px; color: #fff; }
     .input-amount { padding: 12px 14px; font-size: 22px; }
     .input-sm { padding: 10px 12px; font-size: 13px; }
-    .add-btn {
-      width: 100%; background: #00d68f; border: none; border-radius: 12px;
-      padding: 14px; color: #000; font-weight: 500; font-size: 14px;
-      cursor: pointer; letter-spacing: 1px;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .add-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,214,143,0.25); }
-    .add-btn:active { transform: translateY(0); box-shadow: none; }
-
-    /* History */
-    .history { margin-bottom: 24px; }
+    .add-btn { width: 100%; background: #00d68f; border: none; border-radius: 12px; padding: 14px; color: #000; font-weight: 500; cursor: pointer; }
     .history-empty { text-align: center; color: #3a3a5c; padding: 40px 0; font-size: 13px; }
-    .exp-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 0; border-bottom: 1px solid #1a1a2e;
-    }
-    .exp-row:last-child { border-bottom: none; }
-    .exp-icon {
-      width: 38px; height: 38px; border-radius: 10px; background: #1a1a2e;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
-    }
+    .exp-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1a1a2e; }
+    .exp-icon { width: 38px; height: 38px; border-radius: 10px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .exp-info { flex: 1; min-width: 0; }
-    .exp-note { font-size: 13px; color: #e8e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .exp-date { font-size: 10px; color: #5a5a8a; margin-top: 2px; }
-    .exp-amount { font-size: 15px; font-weight: 500; color: #fff; flex-shrink: 0; }
-    .del-btn {
-      background: none; border: none; color: #ff4d4d; cursor: pointer;
-      font-size: 18px; padding: 4px 6px; opacity: 0; transition: opacity 0.2s; line-height: 1;
-    }
-    .exp-row:hover .del-btn { opacity: 1; }
-    /* On touch devices always show delete */
-    @media (hover: none) { .del-btn { opacity: 0.5; } }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100; padding: 20px; animation: fadeIn 0.2s ease;
-    }
-    .modal {
-      background: #13131f; border: 1px solid #2a2a4a; border-radius: 20px;
-      padding: 28px; width: 100%; max-width: 360px;
-    }
+    .exp-note { font-size: 13px; color: #e8e8f0; overflow: hidden; text-overflow: ellipsis; }
+    .exp-date { font-size: 10px; color: #5a5a8a; }
+    .exp-amount { font-size: 15px; font-weight: 500; color: #fff; }
+    .del-btn { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 18px; opacity: 0.5; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+    .modal { background: #13131f; border: 1px solid #2a2a4a; border-radius: 20px; padding: 28px; width: 100%; max-width: 360px; }
     .modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-cancel {
-      flex: 1; background: #1a1a2e; border: none; border-radius: 10px;
-      padding: 12px; color: #8888aa; cursor: pointer; font-size: 13px;
-    }
-    .btn-save {
-      flex: 1; background: #00d68f; border: none; border-radius: 10px;
-      padding: 12px; color: #000; cursor: pointer; font-weight: 500; font-size: 13px;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-      left: 50%; transform: translateX(-50%);
-      background: #1a1a2e; border: 1px solid #3a3a5c;
-      border-radius: 10px; padding: 10px 18px;
-      font-size: 12px; color: #8888aa;
-      animation: slideUp 0.3s ease; z-index: 200; white-space: nowrap;
-    }
-
-    @keyframes slideIn { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    @keyframes slideUp { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+    .btn-cancel { flex: 1; background: #1a1a2e; border: none; border-radius: 10px; padding: 12px; color: #8888aa; }
+    .btn-save { flex: 1; background: #00d68f; border: none; border-radius: 10px; padding: 12px; color: #000; font-weight: 500; }
+    .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #3a3a5c; border-radius: 10px; padding: 10px 18px; font-size: 12px; color: #8888aa; }
   </style>
 </head>
 <body>
 <div id="app"></div>
 
 <script>
-// ── Inline PWA Manifest ──────────────────────────────────────────────────────
-const manifestData = {
-  name: "Xpense — Budget Tracker",
-  short_name: "Xpense",
-  description: "Track daily and monthly expenses",
-  start_url: "./",
-  display: "standalone",
-  background_color: "#0d0d14",
-  theme_color: "#0d0d14",
-  orientation: "portrait",
-  icons: [
-    {
-      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%230d0d14'/%3E%3Ctext x='256' y='340' text-anchor='middle' font-size='300' font-family='monospace' fill='%2300d68f'%3E₹%3C/text%3E%3C/svg%3E",
-      sizes: "512x512",
-      type: "image/svg+xml",
-      purpose: "any maskable"
-    }
-  ]
-};
-const blob = new Blob([JSON.stringify(manifestData)], { type: "application/json" });
-const manifestURL = URL.createObjectURL(blob);
-document.getElementById("manifest-placeholder").href = manifestURL;
-
-// ── Service Worker (offline support) ────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  const swCode = `
-    const CACHE = 'xpense-v1';
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(keys =>
-        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-      ));
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(
-        fetch(e.request).catch(() => caches.match(e.request))
-      );
-    });
-  `;
-  const swBlob = new Blob([swCode], { type: 'application/javascript' });
-  const swURL = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swURL).catch(() => {});
-}
-
-// ── App State ────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'xpense_data_v1';
 const DEFAULTS = { dailyLimit: 500, monthlyLimit: 10000, expenses: [] };
 
@@ -256,13 +107,16 @@ function monthStr() { return new Date().toISOString().slice(0,7); }
 function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 }); }
 function barColor(pct) { return pct >= 100 ? '#ff4d4d' : pct >= 80 ? '#ffaa00' : '#00d68f'; }
 
-// ── Render ───────────────────────────────────────────────────────────────────
 function render() {
   const today = todayStr(), month = monthStr();
+  
+  // FIXED: These filters ensure the UI only shows costs for the current day/month
   const todayExp = state.expenses.filter(e => e.date === today);
   const monthExp = state.expenses.filter(e => e.date.startsWith(month));
+  
   const dSpent = todayExp.reduce((s,e) => s+e.amount, 0);
   const mSpent = monthExp.reduce((s,e) => s+e.amount, 0);
+  
   const dRem = state.dailyLimit - dSpent;
   const mRem = state.monthlyLimit - mSpent;
   const dPct = Math.min(100, (dSpent/state.dailyLimit)*100);
@@ -301,66 +155,40 @@ function render() {
 
   document.getElementById('app').innerHTML = `
     <div class="container">
-      <!-- Header -->
       <div class="header">
-        <div>
-          <div class="logo">XPENSE</div>
-          <div class="logo-sub">BUDGET TRACKER</div>
-        </div>
+        <div><div class="logo">XPENSE</div><div class="logo-sub">BUDGET TRACKER</div></div>
         <button class="settings-btn" onclick="openSettings()">⚙ Limits</button>
       </div>
-
-      <!-- Budget Cards -->
       <div class="budget-grid">${budgetCards}</div>
-
-      <!-- Flash -->
       <div id="flash-area"></div>
-
-      <!-- Tabs -->
       <div class="tabs">
         <button class="tab-btn ${currentTab==='add'?'active':''}" onclick="switchTab('add')">+ Add</button>
         <button class="tab-btn ${currentTab==='history'?'active':''}" onclick="switchTab('history')">History</button>
       </div>
-
-      <!-- Add Form -->
       ${currentTab==='add' ? `
         <div class="form-card">
           <div class="field-mb">
             <div class="field-label">AMOUNT (₹)</div>
-            <input id="amt-input" class="input-field input-amount" type="number" inputmode="decimal"
-              placeholder="0.00" onkeydown="if(event.key==='Enter')addExpense()" autofocus />
+            <input id="amt-input" class="input-field input-amount" type="number" inputmode="decimal" placeholder="0.00" autofocus />
           </div>
           <div class="input-row">
-            <div>
-              <div class="field-label">CATEGORY</div>
-              <select id="cat-input" class="input-field input-sm">${catOptions}</select>
-            </div>
-            <div>
-              <div class="field-label">NOTE</div>
-              <input id="note-input" class="input-field input-sm" type="text"
-                placeholder="Optional" onkeydown="if(event.key==='Enter')addExpense()" />
-            </div>
+            <div><div class="field-label">CATEGORY</div><select id="cat-input" class="input-field input-sm">${catOptions}</select></div>
+            <div><div class="field-label">NOTE</div><input id="note-input" class="input-field input-sm" type="text" placeholder="Optional" /></div>
           </div>
           <button class="add-btn" onclick="addExpense()">ADD EXPENSE</button>
         </div>
-      ` : `
-        <div class="history">${historyRows}</div>
-      `}
+      ` : `<div class="history">${historyRows}</div>`}
     </div>
-
-    <!-- Settings Modal (hidden by default) -->
     <div id="settings-modal" style="display:none" class="modal-overlay" onclick="closeSettingsIfOverlay(event)">
       <div class="modal">
         <div class="modal-title">Set Limits</div>
         <div class="field-mb">
           <div class="field-label">DAILY LIMIT (₹)</div>
-          <input id="daily-input" class="input-field input-sm" type="number" inputmode="decimal"
-            value="${state.dailyLimit}" style="font-size:16px;padding:11px 14px" />
+          <input id="daily-input" class="input-field input-sm" type="number" value="${state.dailyLimit}" />
         </div>
         <div class="field-mb">
           <div class="field-label">MONTHLY LIMIT (₹)</div>
-          <input id="monthly-input" class="input-field input-sm" type="number" inputmode="decimal"
-            value="${state.monthlyLimit}" style="font-size:16px;padding:11px 14px" />
+          <input id="monthly-input" class="input-field input-sm" type="number" value="${state.monthlyLimit}" />
         </div>
         <div class="modal-btns">
           <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
@@ -368,73 +196,38 @@ function render() {
         </div>
       </div>
     </div>
-
     <div id="toast-area"></div>
   `;
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── Actions ──────────────────────────────────────────────────────────────────
 function addExpense() {
   const amtEl = document.getElementById('amt-input');
   const amt = parseFloat(amtEl?.value);
-  if (!amt || amt <= 0) { amtEl?.focus(); return; }
+  if (!amt || amt <= 0) return;
 
   const note = document.getElementById('note-input')?.value.trim() || '';
   const category = document.getElementById('cat-input')?.value || 'Other';
-  const today = todayStr(), month = monthStr();
-
-  const dSpent = state.expenses.filter(e=>e.date===today).reduce((s,e)=>s+e.amount,0);
-  const mSpent = state.expenses.filter(e=>e.date.startsWith(month)).reduce((s,e)=>s+e.amount,0);
+  const today = todayStr();
 
   const newExp = {
-    id: Date.now(), amount: amt,
-    note: note || category, category,
+    id: Date.now(), amount: amt, note: note || category, category,
     date: today,
     time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
   };
 
   state.expenses.unshift(newExp);
   saveData(state);
-
-  const newD = dSpent + amt, newM = mSpent + amt;
-  const dRem = state.dailyLimit - newD, mRem = state.monthlyLimit - newM;
-  let warn = null;
-  if (newD > state.dailyLimit && newM > state.monthlyLimit) warn = 'both';
-  else if (newD > state.dailyLimit) warn = 'daily';
-  else if (newM > state.monthlyLimit) warn = 'monthly';
-
   render();
-  showFlash(amt, warn, dRem, mRem);
-}
-
-function showFlash(amt, warn, dRem, mRem) {
-  const area = document.getElementById('flash-area');
-  if (!area) return;
-  const title = warn==='both' ? '⚠ Both daily & monthly limits exceeded!'
-    : warn==='daily' ? '⚠ Daily limit exceeded!'
-    : warn==='monthly' ? '⚠ Monthly limit exceeded!'
-    : `✓ Added ${fmt(amt)}`;
-  area.innerHTML = `
-    <div class="flash ${warn?'warn':'ok'}">
-      <div class="flash-title ${warn?'warn':'ok'}">${title}</div>
-      <div class="flash-meta">
-        <span>Daily: <span class="${dRem<0?'warn':'ok'}">${dRem<0?'-'+fmt(Math.abs(dRem)):fmt(dRem)} left</span></span>
-        <span>Monthly: <span class="${mRem<0?'warn':'ok'}">${mRem<0?'-'+fmt(Math.abs(mRem)):fmt(mRem)} left</span></span>
-      </div>
-    </div>`;
-  if (flashTimer) clearTimeout(flashTimer);
-  flashTimer = setTimeout(() => { const a=document.getElementById('flash-area'); if(a) a.innerHTML=''; }, 4000);
+  showToast('Added ' + fmt(amt));
 }
 
 function deleteExpense(id) {
   state.expenses = state.expenses.filter(e => e.id !== id);
   saveData(state);
   render();
-  showToast('Expense deleted');
+  showToast('Deleted');
 }
 
 function showToast(msg) {
@@ -442,33 +235,22 @@ function showToast(msg) {
   if (!area) return;
   area.innerHTML = `<div class="toast">${msg}</div>`;
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { const a=document.getElementById('toast-area'); if(a) a.innerHTML=''; }, 2000);
+  toastTimer = setTimeout(() => { area.innerHTML = ''; }, 2000);
 }
 
 function switchTab(tab) { currentTab = tab; render(); }
-
-function openSettings() {
-  const modal = document.getElementById('settings-modal');
-  if (modal) modal.style.display = 'flex';
-}
-function closeSettings() {
-  const modal = document.getElementById('settings-modal');
-  if (modal) modal.style.display = 'none';
-}
-function closeSettingsIfOverlay(e) {
-  if (e.target === e.currentTarget) closeSettings();
-}
+function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
+function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+function closeSettingsIfOverlay(e) { if (e.target === e.currentTarget) closeSettings(); }
 function saveSettings() {
   const d = parseFloat(document.getElementById('daily-input')?.value);
   const m = parseFloat(document.getElementById('monthly-input')?.value);
   if (d > 0 && m > 0) {
     state.dailyLimit = d; state.monthlyLimit = m;
     saveData(state); closeSettings(); render();
-    showToast('Limits updated');
   }
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
 render();
 </script>
 </body>
